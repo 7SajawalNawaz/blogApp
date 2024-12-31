@@ -44,8 +44,8 @@ const NewCategory = () => {
       // api request
 
       const requestBody = {
-        email: formData.email,
-        password: formData.password,
+        title: formData.title,
+        desc: formData.desc,
       };
 
       const response = await axios.post("/category", requestBody);

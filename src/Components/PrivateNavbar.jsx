@@ -16,7 +16,7 @@ const PrivateNavbar = () => {
     navigate("/login");
   };
   return (
-    <div className="font-bold flex flex-row-reverse bg-purple-950 text-white p-4 gap-4">
+    <div className="font-bold flex flex-row-reverse bg-gradient-to-r from-purple-800 to-purple-950 text-white p-4 gap-4">
       <NavLink to="/login" onClick={handleLogout}>
         Logout
       </NavLink>

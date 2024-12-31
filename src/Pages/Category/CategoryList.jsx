@@ -1,12 +1,53 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "../../utilis/baseUrl";
+import moment from "moment"
 
 const CategoryList = () => {
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getCategory = async () => {
+      try {
+        setLoading(true);
+
+        // api request
+        const response = await axios.get("/category");
+        const data = response.data.data;
+        setCategories(data.categorysearch);
+        console.log(data);
+        
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+
+        const response = error.response;
+        const data = response?.data;
+        toast.error(data.message, {
+          position: "top-right",
+          autoClose: true,
+        });
+      }
+    };
+    getCategory();
+  }, []);
+
   return (
     <div className="bg-purple-100 rounded-2xl max-h-full sm:w-[400px] lg:w-[1200px] flex flex-col py-10 px-10 mx-10 my-10 items-center justify-center">
       <div className="border border-purple-600 bg-purple-900 text-white rounded-lg p-2 flex justify-end ml-auto mb-6 text-xs sm:text-base hover:bg-purple-700">
-        <button className="ml-auto" onClick={()=>{navigate ('/category/new-category')}}>Add New Category</button>
+        <button
+          className="ml-auto"
+          onClick={() => {
+            navigate("/category/new-category");
+          }}
+        >
+          Add New Category
+        </button>
       </div>
 
       <div className="text-2xl mb-8 font-bold text-purple-950">
@@ -37,20 +78,29 @@ const CategoryList = () => {
           </thead>
 
           <tbody>
-            <tr className="border-b hover:bg-purple-100">
-              <td className="px-6 py-4">Category 1</td>
-              <td className="px-6 py-4">Description 1</td>
-              <td className="px-6 py-4">10/10/2024</td>
-              <td className="px-6 py-4">10/11/2024</td>
-              <td className="px-6 py-4 flex space-x-2">
-                <button onClick={()=> navigate ('/category/update-category')} className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-                  Update
-                </button>
-                <button className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600">
-                  Delete
-                </button>
-              </td>
-            </tr>
+            {categories.map((category) => (
+
+
+              <tr key={category._id} className="border-b hover:bg-purple-100">
+                <td className="px-6 py-4">{category.title}</td>
+                <td className="px-6 py-4">{category.desc}</td>
+                <td className="px-6 py-4">{moment(category.createdAt).format("  YYYY-MM-DD HH:mm:ss ")}</td>
+                <td className="px-6 py-4">{moment(category.updatedAt).format("  YYYY-MM-DD HH:mm:ss ")}</td>
+                <td className="px-6 py-4 flex space-x-2">
+                  <button
+                    onClick={() => navigate("/category/update-category")}
+                    className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                  >
+                    Update
+                  </button>
+                  <button className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            
           </tbody>
         </table>
       </div>
